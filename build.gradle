@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '4.0.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'com.google.protobuf' version '0.9.5'
+    id 'org.jooq.jooq-codegen-gradle' version '3.20.11'
 }
 
 group = 'com.pay'
@@ -30,13 +31,16 @@ ext {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.jooq:jooq:3.20.11'
+    implementation 'org.jooq:jooq-meta:3.20.11'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
 	implementation 'org.springframework.boot:spring-boot-starter-kafka'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'io.grpc:grpc-services'
 	implementation 'org.springframework.grpc:spring-grpc-server-web-spring-boot-starter'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
+    jooqCodegen 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-jooq-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-kafka-test'
@@ -69,6 +73,42 @@ protobuf {
 	}
 }
 
+tasks.named('compileJava') {
+    dependsOn 'jooqCodegen'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+    dependsOn 'jooqCodegen'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += 'build/generated-sources/jooq'
+        }
+    }
+}
+
+jooq {
+    configuration {
+        jdbc {
+            driver = 'org.postgresql.Driver'
+            // ชี้ไปที่ Docker Postgres ที่เราตั้งไว้ใน docker-compose.yml
+            url = 'jdbc:postgresql://localhost:5432/pay_metadata'
+            user = 'admin'
+            password = 'password123'
+        }
+        generator {
+            name = 'org.jooq.codegen.DefaultGenerator'
+            database {
+                name = 'org.jooq.meta.postgres.PostgresDatabase'
+                inputSchema = 'public'
+            }
+            target {
+                packageName = 'com.pay.core_service.jooq'
+                directory = 'build/generated-sources/jooq'
+            }
+        }
+    }
 }

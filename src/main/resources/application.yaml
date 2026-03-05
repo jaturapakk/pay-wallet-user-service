@@ -1,3 +1,10 @@
 spring:
   application:
-    name: user
+    name: core-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pay_metadata
+    username: admin
+    password: password123
+    driver-class-name: org.postgresql.Driver
+  jooq:
+    sql-dialect: postgres
