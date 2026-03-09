@@ -15,9 +15,16 @@ public class UserPersistentAdapter implements UserRepositoryPort {
     private final DSLContext dslContext;
 
     @Override
-    public void createUser(User user) {
+    public User createUser(User user) {
         UsersRecord record = dslContext.newRecord(USERS, user);
-        record.insert();
+        record.reset(USERS.CREATED_AT);
+        record.reset(USERS.UPDATED_AT);
 
+        return dslContext.insertInto(USERS)
+                .set(record)
+                .returning()
+                .fetchOptional()
+                .map(User::new)
+                .orElseThrow();
     }
 }

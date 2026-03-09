@@ -16,9 +16,9 @@ public class CreateUserService implements CreateUserUseCase {
 
     @Override
     public CreateUserResponse createUser(CreateUserRequest request) {
-        User newUser = User.createUser(request.email(), request.fullName());
-        userRepositoryPort.createUser(newUser);
 
-        return new CreateUserResponse(newUser.getId(),newUser.getEmail(), newUser.getFullName());
+        User result = userRepositoryPort.createUser(User.createUser(request.email(), request.fullName()));
+
+        return new CreateUserResponse(result.getId(),result.getEmail(), result.getFullName(), result.getLedgerAccountId().toString());
     }
 }

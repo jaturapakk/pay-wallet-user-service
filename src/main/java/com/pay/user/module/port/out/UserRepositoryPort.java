@@ -4,5 +4,5 @@ import com.pay.user.module.domain.model.User;
 
 public interface UserRepositoryPort {
 
-    void createUser(User user);
+    User createUser(User user);
 }

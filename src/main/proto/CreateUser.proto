@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_package = "com.user.grpc";
+option java_multiple_files = true;
+
+// The greeting service definition.
+service CreateUser {
+  // Sends a greeting
+  rpc CreateUser (CreateUserGrpcRequest) returns (CreateUserGrpcResponse) {}
+}
+
+// The request message containing the user's name.
+message CreateUserGrpcRequest {
+  string email = 1;
+  string fullName = 2;
+}
+
+// The response message containing the greetings.
+message CreateUserGrpcResponse {
+  string id = 1;
+  string email = 2;
+  string fullName = 3;
+  string ledgerAccountId = 4;
+}

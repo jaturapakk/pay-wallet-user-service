@@ -8,3 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jooq:
     sql-dialect: postgres
+  grpc:
+    server:
+      reflection-enabled: true
+      port: 9090

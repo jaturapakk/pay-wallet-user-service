@@ -37,7 +37,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-kafka'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'io.grpc:grpc-services'
-	implementation 'org.springframework.grpc:spring-grpc-server-web-spring-boot-starter'
+	implementation "org.springframework.grpc:spring-grpc-spring-boot-starter"
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
     jooqCodegen 'org.postgresql:postgresql'
@@ -75,17 +75,21 @@ protobuf {
 
 tasks.named('compileJava') {
     dependsOn 'jooqCodegen'
+	dependsOn 'generateProto'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
     dependsOn 'jooqCodegen'
+	dependsOn 'generateProto'
 }
 
 sourceSets {
     main {
         java {
             srcDirs += 'build/generated-sources/jooq'
+			srcDirs += 'build/generated/sources/proto/main/java'
+			srcDirs += 'build/generated/sources/proto/main/grpc'
         }
     }
 }
