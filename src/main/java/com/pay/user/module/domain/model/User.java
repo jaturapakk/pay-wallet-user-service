@@ -39,12 +39,11 @@ public class User {
     }
     public static User createUser(final String email, final String fullName) {
         User newUser = new User(UUID.randomUUID(), email, fullName, UUID.randomUUID());
-        newUser.addEvent(new UserCreatedEvent(newUser.id, newUser.email, newUser.fullName));
+        newUser.addEvent(new UserCreatedEvent(newUser.id, newUser.email, newUser.fullName, newUser.getLedgerAccountId()));
         return newUser;
     }
     public void addEvent(final Object event) {
         events.add(event);
     }
-
 
 }
